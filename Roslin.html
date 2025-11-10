@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Dorado Car Components LAN System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #dc2626;
+            --primary-foreground: #ffffff;
+            --secondary: #f8fafc;
+            --secondary-foreground: #0f172a;
+            --muted: #f1f5f9;
+            --muted-foreground: #64748b;
+            --accent: #f1f5f9;
+            --accent-foreground: #0f172a;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
+            --border: #e2e8f0;
+            --input: #ffffff;
+            --ring: #dc2626;
+            --radius: 0.5rem;
+            --sidebar: #1e293b;
+            --sidebar-foreground: #f8fafc;
+            --sidebar-accent: #334155;
+            --chart-1: #3b82f6;
+            --chart-2: #10b981;
+            --chart-3: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Enhanced Login Styles */
+        .login-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%23ffffff" fill-opacity="0.05" points="0,1000 1000,0 1000,1000"/></svg>');
+            background-size: cover;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), #b91c1c);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .login-logo i {
+            font-size: 2rem;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e293b, #475569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .login-divider span {
+            padding: 0 1rem;
+        }
+
+        .demo-credentials {
+            background: linear-gradient(135deg, #dbeafe, #eff6ff);
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .demo-credentials h4 {
+            color: #1e40af;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-credentials h4 i {
+            color: #3b82f6;
+        }
+
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+
+        .credential-role {
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar);
+            color: var(--sidebar-foreground);
+            padding: 1.5rem 1rem;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--sidebar-accent);
+        }
+
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(to bottom right, var(--primary), #b91c1c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .sidebar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
+            padding-left: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+            color: var(--sidebar-foreground);
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background-color: var(--sidebar-accent);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            background-color: white;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--muted);
+            border-radius: var(--radius);
+            padding: 0.5rem 1rem;
+            width: 400px;
+        }
+
+        .search-bar i {
+            color: var(--muted-foreground);
+            margin-right: 0.5rem;
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            color: var(--secondary-foreground);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: white;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            padding: 1.5rem 1.5rem 0.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-description {
+            color: var(--muted-foreground);
+            font-size: 0.875rem;
+        }
+
+        .card-content {
+            padding: 1rem 1.5rem 1.5rem;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: 1fr;
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .grid-cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        @media (max-width: 1024px) {
+            .grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar-title, .sidebar-subtitle, .nav-title, .nav-item span {
+                display: none;
+            }
+            
+            .nav-item {
+                justify-content: center;
+            }
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--destructive);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--input);
+            transition: border-color 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--ring);
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-helper {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            margin-top: 0.25rem;
+        }
+
+        .form-error {
+            font-size: 0.75rem;
+            color: var(--destructive);
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .form-input:invalid, .form-select:invalid, .form-textarea:invalid {
+            border-color: var(--destructive);
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .radio-option, .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .radio-option input, .checkbox-option input {
+            width: 16px;
+            height: 16px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-radius: var(--radius);
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .btn-primary:hover {
+            background-color: #b91c1c;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--secondary-foreground);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--secondary-foreground);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--muted);
+        }
+
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .file-label i {
+            font-size: 2rem;
+            color: var(--muted-foreground);
+        }
+
+        /* Module-specific styles */
+        .module {
+            display: none;
+        }
+
+        .module.active {
+            display: block;
+        }
+
+        /* Success Message */
+        .success-message {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        /* Profile Update Styles */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #b91c1c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .profile-avatar-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid white;
+        }
+
+        .profile-info h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-info p {
+            color: var(--muted-foreground);
+        }
+
+        /* Utilities */
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
+
+        .space-y-6 > * + * {
+            margin-top: 1.5rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .text-muted {
+            color: var(--muted-foreground);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 {
+            margin-top: 0.25rem;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .p-4 {
+            padding: 1rem;
+        }
+
+        .p-6 {
+            padding: 1.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="login-page" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-car"></i>
+                </div>
+                <h1 class="login-title">El Dorado Car Components</h1>
+                <p class="login-subtitle">LAN-Based Inventory System</p>
+                <p class="text-sm text-muted mt-2">65 Years of Integrity, Honesty, Reliability in Parts Sales</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label required" for="access-level">Access Level</label>
+                    <select class="form-select" id="access-level" name="accessLevel" required>
+                        <option value="">Select your access level</option>
+                        <option value="admin">Administrator</option>
+                        <option value="inventory_clerk">Inventory Clerk</option>
+                        <option value="loa">LOA</option>
+                    </select>
+                    <div class="form-error" id="access-level-error">Please select your access level</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label required" for="username">Username</label>
+                    <input class="form-input" type="text" id="username" name="username" placeholder="Enter your username" required minlength="3" maxlength="20">
+                    <div class="form-error" id="username-error">Username must be 3-20 characters</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label required" for="password">Password</label>
+                    <div class="password-input">
+                        <input class="form-input" type="password" id="password" name="password" placeholder="Enter your password" required minlength="8">
+                        <button type="button" class="password-toggle" id="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-error" id="password-error">Password must be at least 8 characters</div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="remember-me" name="rememberMe">
+                        <label for="remember-me">Remember me on this device</label>
+                    </div>
+                </div>
+                
+                <div id="login-error" class="alert alert-destructive hidden">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="error-message"></span>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-full mt-4">
+                    <span id="login-text">Sign In to Dashboard</span>
+                    <span id="login-loading" class="hidden">
+                        <i class="fas fa-spinner fa-spin"></i> Signing In...
+                    </span>
+                </button>
+                
+                <div class="login-divider">
+                    <span>Demo Access</span>
+                </div>
+                
+                <div class="demo-credentials">
+                    <h4>
+                        <i class="fas fa-key"></i>
+                        Test Credentials
+                    </h4>
+                    <div class="credential-item">
+                        <span class="credential-role">Administrator:</span>
+                        <span>admin / password123</span>
+                    </div>
+                    <div class="credential-item">
+                        <span class="credential-role">Inventory Clerk:</span>
+                        <span>clerk01 / password123</span>
+                    </div>
+                    <div class="credential-item">
+                        <span class="credential-role">LOA:</span>
+                        <span>loa01 / password123</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="container hidden">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-car"></i>
+                </div>
+                <div>
+                    <div class="sidebar-title">El Dorado</div>
+                    <div class="sidebar-subtitle">LAN System v2.1.0</div>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">MAIN NAVIGATION</div>
+                <a href="#" class="nav-item active" data-module="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-module="inventory">
+                    <i class="fas fa-boxes"></i>
+                    <span>Inventory</span>
+                </a>
+                <a href="#" class="nav-item" data-module="sales">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Sales</span>
+                </a>
+                <a href="#" class="nav-item" data-module="search">
+                    <i class="fas fa-search"></i>
+                    <span>Search</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">SYSTEM MANAGEMENT</div>
+                <a href="#" class="nav-item" data-module="reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="nav-item" data-module="registration">
+                    <i class="fas fa-user-plus"></i>
+                    <span>User Registration</span>
+                </a>
+                <a href="#" class="nav-item" data-module="profile">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Profile Update</span>
+                </a>
+                <a href="#" class="nav-item" data-module="configuration">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Configuration</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">SUPPORT</div>
+                <a href="#" class="nav-item" data-module="help">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help & Support</span>
+                </a>
+                <a href="#" class="nav-item" data-module="about">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About System</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="topbar">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search for items, reports, settings...">
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-details">
+                        <div class="user-name">Mark Kendrick</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                    <div class="user-avatar">MK</div>
+                </div>
+            </div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Module -->
+                <div id="dashboard-module" class="module active">
+                    <div class="welcome-banner">
+                        <h2 class="text-2xl font-bold mb-2">Good morning, Mark Kendrick!</h2>
+                        <p>Welcome to the El Dorado Car Components management system</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-info">
+                                <div class="stat-title">Today's Sales</div>
+                                <div class="stat-value">45</div>
+                                <div class="text-sm text-green-600 flex items-center mt-1">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    +12% from yesterday
+                                </div>
+                            </div>
+                            <div class="stat-icon stat-icon-primary">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-info">
+                                <div class="stat-title">Revenue</div>
+                                <div class="stat-value">₱125,400</div>
+                                <div class="text-sm text-green-600 flex items-center mt-1">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    +12% from yesterday
+                                </div>
+                            </div>
+                            <div class="stat-icon stat-icon-success">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-info">
+                                <div class="stat-title">Low Stock Items</div>
+                                <div class="stat-value text-yellow-600">23</div>
+                                <div class="text-sm text-muted mt-1">
+                                    Require attention
+                                </div>
+                            </div>
+                            <div class="stat-icon stat-icon-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-info">
+                                <div class="stat-title">Out of Stock</div>
+                                <div class="stat-value text-red-600">5</div>
+                                <div class="text-sm text-muted mt-1">
+                                    Need restocking
+                                </div>
+                            </div>
+                            <div class="stat-icon stat-icon-info">
+                                <i class="fas fa-box"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Registration Module (MAJOR FORM 1) -->
+                <div id="registration-module" class="module">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-user-plus"></i>
+                                User Registration
+                            </h3>
+                            <p class="card-description">Register new system users with appropriate access levels</p>
+                        </div>
+                        <div class="card-content">
+                            <div id="registration-success" class="success-message">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                User registered successfully!
+                            </div>
+                            
+                            <form id="user-registration-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="first-name">First Name</label>
+                                        <input type="text" class="form-input" id="first-name" name="firstName" required minlength="2" maxlength="50">
+                                        <div class="form-error" id="first-name-error">First name must be 2-50 characters</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="middle-name">Middle Name</label>
+                                        <input type="text" class="form-input" id="middle-name" name="middleName" maxlength="50">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="last-name">Last Name</label>
+                                    <input type="text" class="form-input" id="last-name" name="lastName" required minlength="2" maxlength="50">
+                                    <div class="form-error" id="last-name-error">Last name must be 2-50 characters</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="email">Email Address</label>
+                                    <input type="email" class="form-input" id="email" name="email" required>
+                                    <div class="form-error" id="email-error">Please enter a valid email address</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="phone">Phone Number</label>
+                                    <input type="tel" class="form-input" id="phone" name="phone" required pattern="[0-9]{10,15}">
+                                    <div class="form-helper">Format: 10-15 digits without spaces or special characters</div>
+                                    <div class="form-error" id="phone-error">Please enter a valid phone number (10-15 digits)</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="user-role">User Role</label>
+                                    <select class="form-select" id="user-role" name="userRole" required>
+                                        <option value="">Select a role</option>
+                                        <option value="admin">Administrator</option>
+                                        <option value="inventory_clerk">Inventory Clerk</option>
+                                        <option value="loa">LOA</option>
+                                    </select>
+                                    <div class="form-error" id="user-role-error">Please select a user role</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="start-date">Start Date</label>
+                                    <input type="date" class="form-input" id="start-date" name="startDate" required>
+                                    <div class="form-error" id="start-date-error">Please select a valid start date</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Access Permissions</label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="permission-inventory" name="permissions" value="inventory">
+                                            <label for="permission-inventory">Inventory Management</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="permission-sales" name="permissions" value="sales">
+                                            <label for="permission-sales">Sales Processing</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="permission-reports" name="permissions" value="reports">
+                                            <label for="permission-reports">Report Generation</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="permission-users" name="permissions" value="users">
+                                            <label for="permission-users">User Management</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-error" id="permissions-error">Please select at least one permission</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Account Status</label>
+                                    <div class="radio-group">
+                                        <div class="radio-option">
+                                            <input type="radio" id="status-active" name="status" value="active" checked>
+                                            <label for="status-active">Active</label>
+                                        </div>
+                                        <div class="radio-option">
+                                            <input type="radio" id="status-inactive" name="status" value="inactive">
+                                            <label for="status-inactive">Inactive</label>
+                                        </div>
+                                        <div class="radio-option">
+                                            <input type="radio" id="status-pending" name="status" value="pending">
+                                            <label for="status-pending">Pending Approval</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="notes">Additional Notes</label>
+                                    <textarea class="form-textarea" id="notes" name="notes" maxlength="500"></textarea>
+                                    <div class="form-helper">Maximum 500 characters</div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="reset" class="btn btn-outline">Clear Form</button>
+                                    <button type="submit" class="btn btn-primary">Register User</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product Registration Module (MAJOR FORM 2) -->
+                <div id="inventory-module" class="module">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-3xl font-bold flex items-center gap-2">
+                                <i class="fas fa-boxes"></i>
+                                Inventory Management
+                            </h2>
+                            <p class="text-muted-foreground mt-1">
+                                Manage product registration and stock levels
+                            </p>
+                        </div>
+                        <button class="btn btn-primary" id="show-product-form">
+                            <i class="fas fa-plus mr-2"></i>
+                            Add Product
+                        </button>
+                    </div>
+                    
+                    <div id="product-registration-form" class="card hidden">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-box"></i>
+                                Product Registration
+                            </h3>
+                            <p class="card-description">Add new products to the inventory system</p>
+                        </div>
+                        <div class="card-content">
+                            <div id="product-success" class="success-message">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                Product added successfully!
+                            </div>
+                            
+                            <form id="product-form">
+                                <div class="form-group">
+                                    <label class="form-label required" for="product-name">Product Name</label>
+                                    <input type="text" class="form-input" id="product-name" name="productName" required minlength="3" maxlength="100">
+                                    <div class="form-error" id="product-name-error">Product name must be 3-100 characters</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="product-code">Product Code</label>
+                                    <input type="text" class="form-input" id="product-code" name="productCode" required pattern="[A-Z0-9]{3,10}">
+                                    <div class="form-helper">3-10 uppercase letters and numbers only</div>
+                                    <div class="form-error" id="product-code-error">Product code must be 3-10 uppercase letters and numbers</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="product-category">Category</label>
+                                    <select class="form-select" id="product-category" name="productCategory" required>
+                                        <option value="">Select a category</option>
+                                        <option value="mechanical">Mechanical Components</option>
+                                        <option value="electrical">Electrical & Electronic</option>
+                                        <option value="body">Body & Accessories</option>
+                                        <option value="maintenance">Maintenance & Fluids</option>
+                                        <option value="interior">Interior Components</option>
+                                    </select>
+                                    <div class="form-error" id="product-category-error">Please select a category</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="supplier">Supplier</label>
+                                    <select class="form-select" id="supplier" name="supplier" required>
+                                        <option value="">Select a supplier</option>
+                                        <option value="autoparts_plus">AutoParts Plus</option>
+                                        <option value="lighttech">LightTech Solutions</option>
+                                        <option value="oil_masters">Oil Masters</option>
+                                        <option value="brake_pro">Brake Pro</option>
+                                        <option value="engine_experts">Engine Experts</option>
+                                    </select>
+                                    <div class="form-error" id="supplier-error">Please select a supplier</div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="cost-price">Cost Price (₱)</label>
+                                        <input type="number" class="form-input" id="cost-price" name="costPrice" required min="0" step="0.01">
+                                        <div class="form-error" id="cost-price-error">Please enter a valid cost price</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label required" for="selling-price">Selling Price (₱)</label>
+                                        <input type="number" class="form-input" id="selling-price" name="sellingPrice" required min="0" step="0.01">
+                                        <div class="form-error" id="selling-price-error">Please enter a valid selling price</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="stock-quantity">Stock Quantity</label>
+                                        <input type="number" class="form-input" id="stock-quantity" name="stockQuantity" required min="0">
+                                        <div class="form-error" id="stock-quantity-error">Please enter a valid quantity</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label required" for="min-stock">Minimum Stock Level</label>
+                                        <input type="number" class="form-input" id="min-stock" name="minStock" required min="0">
+                                        <div class="form-error" id="min-stock-error">Please enter a valid minimum stock level</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Product Features</label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="feature-mitsubishi" name="features" value="mitsubishi">
+                                            <label for="feature-mitsubishi">Mitsubishi</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="feature-genuine-oem" name="features" value="genuine_oem">
+                                            <label for="feature-genuine-oem">Genuine OEM</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="product-image">Product Image</label>
+                                    <div class="file-upload">
+                                        <input type="file" class="file-input" id="product-image" name="productImage" accept="image/*">
+                                        <label for="product-image" class="file-label">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <span>Click to upload product image</span>
+                                            <span class="text-sm text-muted">PNG, JPG, GIF up to 5MB</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-error" id="product-image-error">Please select a valid image file</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="product-description">Product Description</label>
+                                    <textarea class="form-textarea" id="product-description" name="productDescription" maxlength="1000"></textarea>
+                                    <div class="form-helper">Maximum 1000 characters</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <div class="checkbox-option">
+                                        <input type="checkbox" id="track-inventory" name="trackInventory" checked>
+                                        <label for="track-inventory">Track inventory for this product</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-outline" id="cancel-product">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Add Product</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Update Module (SUPPORTING FORM 3) -->
+                <div id="profile-module" class="module">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-user-edit"></i>
+                                Profile Update
+                            </h3>
+                            <p class="card-description">Manage your personal information and account preferences</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="profile-header">
+                                <div class="profile-avatar">
+                                    MK
+                                    <div class="profile-avatar-upload">
+                                        <i class="fas fa-camera"></i>
+                                    </div>
+                                </div>
+                                <div class="profile-info">
+                                    <h2>Mark Kendrick</h2>
+                                    <p>Administrator • Last login: Today, 09:42 AM</p>
+                                </div>
+                            </div>
+                            
+                            <div id="profile-success" class="success-message">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                Profile updated successfully!
+                            </div>
+                            
+                            <form id="profile-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="full-name">Full Name</label>
+                                        <input type="text" class="form-input" id="full-name" name="fullName" value="Mark Kendrick" required>
+                                        <div class="form-error" id="full-name-error">Full name is required</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label required" for="profile-username">Username</label>
+                                        <input type="text" class="form-input" id="profile-username" name="username" value="admin" required>
+                                        <div class="form-error" id="profile-username-error">Username is required</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="profile-email">Email Address</label>
+                                    <input type="email" class="form-input" id="profile-email" name="email" value="mark.kendrick@eldorado.com" required>
+                                    <div class="form-error" id="profile-email-error">Please enter a valid email address</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="profile-phone">Phone Number</label>
+                                    <input type="tel" class="form-input" id="profile-phone" name="phone" value="+639123456789" required pattern="[0-9+]{10,15}">
+                                    <div class="form-error" id="profile-phone-error">Please enter a valid phone number</div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="department">Department</label>
+                                        <select class="form-select" id="department" name="department" required>
+                                            <option value="administration" selected>Administration</option>
+                                            <option value="inventory">Inventory Management</option>
+                                            <option value="sales">Sales</option>
+                                            <option value="customer_service">Customer Service</option>
+                                        </select>
+                                        <div class="form-error" id="department-error">Please select a department</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label required" for="language">Language</label>
+                                        <select class="form-select" id="language" name="language" required>
+                                            <option value="en" selected>English</option>
+                                            <option value="es">Spanish</option>
+                                            <option value="fr">French</option>
+                                            <option value="de">German</option>
+                                        </select>
+                                        <div class="form-error" id="language-error">Please select a language</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="birth-date">Birth Date</label>
+                                    <input type="date" class="form-input" id="birth-date" name="birthDate" value="1985-06-15">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="bio">Bio / Description</label>
+                                    <textarea class="form-textarea" id="bio" name="bio" maxlength="300">Senior Administrator with 8+ years of experience in automotive parts management.</textarea>
+                                    <div class="form-helper">Maximum 300 characters</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Notification Preferences</label>
+                                    <div class="radio-group">
+                                        <div class="radio-option">
+                                            <input type="radio" id="notify-all" name="notifications" value="all" checked>
+                                            <label for="notify-all">All notifications</label>
+                                        </div>
+                                        <div class="radio-option">
+                                            <input type="radio" id="notify-important" name="notifications" value="important">
+                                            <label for="notify-important">Important only</label>
+                                        </div>
+                                        <div class="radio-option">
+                                            <input type="radio" id="notify-none" name="notifications" value="none">
+                                            <label for="notify-none">No notifications</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Email Subscriptions</label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="sub-newsletter" name="subscriptions" value="newsletter" checked>
+                                            <label for="sub-newsletter">Company newsletter</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="sub-promotions" name="subscriptions" value="promotions">
+                                            <label for="sub-promotions">Promotions and discounts</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="sub-system" name="subscriptions" value="system" checked>
+                                            <label for="sub-system">System updates</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="reset" class="btn btn-outline">Reset Changes</button>
+                                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search Module (SUPPORTING FORM 1) -->
+                <div id="search-module" class="module">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-search"></i>
+                                Advanced Search
+                            </h3>
+                            <p class="card-description">Find products, users, or transactions using multiple criteria</p>
+                        </div>
+                        <div class="card-content">
+                            <form id="search-form">
+                                <div class="form-group">
+                                    <label class="form-label required" for="search-type">Search Type</label>
+                                    <select class="form-select" id="search-type" name="searchType" required>
+                                        <option value="">What are you looking for?</option>
+                                        <option value="products">Products</option>
+                                        <option value="users">Users</option>
+                                        <option value="transactions">Transactions</option>
+                                        <option value="suppliers">Suppliers</option>
+                                    </select>
+                                    <div class="form-error" id="search-type-error">Please select a search type</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="search-query">Search Query</label>
+                                    <input type="text" class="form-input" id="search-query" name="searchQuery" required minlength="2" placeholder="Enter your search terms...">
+                                    <div class="form-error" id="search-query-error">Please enter at least 2 characters</div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="date-from">Date From</label>
+                                        <input type="date" class="form-input" id="date-from" name="dateFrom">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="date-to">Date To</label>
+                                        <input type="date" class="form-input" id="date-to" name="dateTo">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="category-filter">Category Filter</label>
+                                    <select class="form-select" id="category-filter" name="categoryFilter">
+                                        <option value="">All Categories</option>
+                                        <option value="mechanical">Mechanical Components</option>
+                                        <option value="electrical">Electrical & Electronic</option>
+                                        <option value="body">Body & Accessories</option>
+                                        <option value="maintenance">Maintenance & Fluids</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Status Filter</label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="status-instock" name="status" value="in_stock" checked>
+                                            <label for="status-instock">In Stock</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="status-lowstock" name="status" value="low_stock" checked>
+                                            <label for="status-lowstock">Low Stock</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="status-outofstock" name="status" value="out_of_stock">
+                                            <label for="status-outofstock">Out of Stock</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Search Options</label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="option-exact" name="searchOptions" value="exact_match">
+                                            <label for="option-exact">Exact match only</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="option-include-desc" name="searchOptions" value="include_description" checked>
+                                            <label for="option-include-desc">Search in descriptions</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="option-fuzzy" name="searchOptions" value="fuzzy_search">
+                                            <label for="option-fuzzy">Fuzzy search</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="sort-results">Sort Results By</label>
+                                    <select class="form-select" id="sort-results" name="sortResults">
+                                        <option value="relevance">Relevance</option>
+                                        <option value="name_asc">Name (A-Z)</option>
+                                        <option value="name_desc">Name (Z-A)</option>
+                                        <option value="price_asc">Price (Low to High)</option>
+                                        <option value="price_desc">Price (High to Low)</option>
+                                        <option value="date_new">Date (Newest First)</option>
+                                        <option value="date_old">Date (Oldest First)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="reset" class="btn btn-outline">Reset Filters</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search mr-2"></i>
+                                        Search
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Configuration Module (SUPPORTING FORM 2) -->
+                <div id="configuration-module" class="module">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-sliders-h"></i>
+                                System Configuration
+                            </h3>
+                            <p class="card-description">Customize system settings and preferences</p>
+                        </div>
+                        <div class="card-content">
+                            <div id="config-success" class="success-message">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                Configuration updated successfully!
+                            </div>
+                            
+                            <form id="configuration-form">
+                                <div class="form-group">
+                                    <label class="form-label required" for="company-name">Company Name</label>
+                                    <input type="text" class="form-input" id="company-name" name="companyName" value="El Dorado Car Components" required>
+                                    <div class="form-error" id="company-name-error">Company name is required</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required" for="date-format">Date Format</label>
+                                    <select class="form-select" id="date-format" name="dateFormat" required>
+                                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                        <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                    </select>
+                                    <div class="form-error" id="date-format-error">Please select a date format</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">System Preferences</label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="pref-email-notifications" name="preferences" value="email_notifications" checked>
+                                            <label for="pref-email-notifications">Email notifications</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="pref-low-stock-alerts" name="preferences" value="low_stock_alerts" checked>
+                                            <label for="pref-low-stock-alerts">Low stock alerts</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="pref-auto-backup" name="preferences" value="auto_backup">
+                                            <label for="pref-auto-backup">Automatic backups</label>
+                                        </div>
+                                        <div class="checkbox-option">
+                                            <input type="checkbox" id="pref-audit-log" name="preferences" value="audit_log" checked>
+                                            <label for="pref-audit-log">Audit logging</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="session-timeout">Session Timeout (minutes)</label>
+                                    <input type="number" class="form-input" id="session-timeout" name="sessionTimeout" value="30" min="5" max="480">
+                                    <div class="form-helper">After this time, users will be automatically logged out</div>
+                                    <div class="form-error" id="session-timeout-error">Session timeout must be between 5 and 480 minutes</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="low-stock-threshold">Low Stock Threshold</label>
+                                    <input type="number" class="form-input" id="low-stock-threshold" name="lowStockThreshold" value="10" min="1" max="100">
+                                    <div class="form-helper">Products with stock below this value will trigger alerts</div>
+                                    <div class="form-error" id="low-stock-threshold-error">Threshold must be between 1 and 100</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Theme Settings</label>
+                                    <div class="radio-group">
+                                        <div class="radio-option">
+                                            <input type="radio" id="theme-light" name="theme" value="light" checked>
+                                            <label for="theme-light">Light Mode</label>
+                                        </div>
+                                        <div class="radio-option">
+                                            <input type="radio" id="theme-dark" name="theme" value="dark">
+                                            <label for="theme-dark">Dark Mode</label>
+                                        </div>
+                                        <div class="radio-option">
+                                            <input type="radio" id="theme-auto" name="theme" value="auto">
+                                            <label for="theme-auto">Auto (System Preference)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Two-Factor Authentication</label>
+                                    <div class="flex items-center justify-between">
+                                        <span>Enable 2FA for all users</span>
+                                        <label class="toggle">
+                                            <input type="checkbox" id="enable-2fa" name="enable2FA">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="backup-frequency">Backup Frequency</label>
+                                    <select class="form-select" id="backup-frequency" name="backupFrequency">
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly" selected>Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                        <option value="never">Never</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="reset" class="btn btn-outline">Reset to Defaults</button>
+                                    <button type="submit" class="btn btn-primary">Save Configuration</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Other modules would go here -->
+                <div id="sales-module" class="module">
+                    <!-- Sales module content -->
+                </div>
+                
+                <div id="reports-module" class="module">
+                    <!-- Reports module content -->
+                </div>
+                
+                <div id="maintenance-module" class="module">
+                    <!-- Maintenance module content -->
+                </div>
+                
+                <div id="help-module" class="module">
+                    <!-- Help module content -->
+                </div>
+                
+                <div id="about-module" class="module">
+                    <!-- About module content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock user database
+        const mockUsers = [
+            {
+                id: '1',
+                username: 'admin',
+                role: 'admin',
+                firstName: 'Mark',
+                lastName: 'Kendrick',
+                middleInitial: 'A',
+                email: 'mark.kendrick@eldorado.com'
+            },
+            {
+                id: '2',
+                username: 'clerk01',
+                role: 'inventory_clerk',
+                firstName: 'Mark',
+                lastName: 'Kendrick',
+                middleInitial: 'A',
+                email: 'mark.kendrick@eldorado.com'
+            },
+            {
+                id: '3',
+                username: 'loa01',
+                role: 'loa',
+                firstName: 'Mark',
+                lastName: 'Kendrick',
+                email: 'mark.kendrick@eldorado.com'
+            }
+        ];
+
+        // DOM Elements
+        const loginPage = document.getElementById('login-page');
+        const app = document.getElementById('app');
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const accessLevelSelect = document.getElementById('access-level');
+        const togglePasswordBtn = document.getElementById('toggle-password');
+        const loginError = document.getElementById('login-error');
+        const errorMessage = document.getElementById('error-message');
+        const loginText = document.getElementById('login-text');
+        const loginLoading = document.getElementById('login-loading');
+        const forgotPasswordBtn = document.getElementById('forgot-password');
+        const navItems = document.querySelectorAll('.nav-item');
+        const modules = document.querySelectorAll('.module');
+        
+        // Form elements
+        const userRegistrationForm = document.getElementById('user-registration-form');
+        const productForm = document.getElementById('product-form');
+        const searchForm = document.getElementById('search-form');
+        const configurationForm = document.getElementById('configuration-form');
+        const profileForm = document.getElementById('profile-form');
+        const showProductFormBtn = document.getElementById('show-product-form');
+        const productRegistrationForm = document.getElementById('product-registration-form');
+        const cancelProductBtn = document.getElementById('cancel-product');
+
+        // Toggle password visibility
+        togglePasswordBtn.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+
+        // Login form handler
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validateForm(loginForm)) {
+                return;
+            }
+            
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            const selectedLevel = accessLevelSelect.value;
+            
+            // Show loading state
+            loginText.classList.add('hidden');
+            loginLoading.classList.remove('hidden');
+            
+            // Simulate login delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Find user by username
+            const user = mockUsers.find(u => u.username === username);
+            
+            if (!user) {
+                showError('Invalid username or password');
+                return;
+            }
+            
+            // Simple password validation
+            if (password !== 'password123') {
+                showError('Invalid username or password');
+                return;
+            }
+            
+            // Check if selected level matches user role
+            if (selectedLevel && selectedLevel !== user.role) {
+                showError('Selected access level does not match your account');
+                return;
+            }
+            
+            // Successful login
+            loginPage.classList.add('hidden');
+            app.classList.remove('hidden');
+            
+            // Reset loading state
+            loginText.classList.remove('hidden');
+            loginLoading.classList.add('hidden');
+        });
+
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            loginError.classList.remove('hidden');
+            
+            // Reset loading state
+            loginText.classList.remove('hidden');
+            loginLoading.classList.add('hidden');
+        }
+
+        // Navigation handler
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all nav items
+                navItems.forEach(nav => nav.classList.remove('active'));
+                
+                // Add active class to clicked nav item
+                this.classList.add('active');
+                
+                // Get the module to show
+                const moduleName = this.getAttribute('data-module');
+                
+                // Hide all modules
+                modules.forEach(module => module.classList.remove('active'));
+                
+                // Show the selected module
+                const targetModule = document.getElementById(`${moduleName}-module`);
+                if (targetModule) {
+                    targetModule.classList.add('active');
+                }
+            });
+        });
+
+        // Form validation function
+        function validateForm(form) {
+            let isValid = true;
+            const inputs = form.querySelectorAll('input, select, textarea');
+            
+            inputs.forEach(input => {
+                // Skip hidden fields and buttons
+                if (input.type === 'hidden' || input.type === 'submit' || input.type === 'reset') {
+                    return;
+                }
+                
+                // Reset error display
+                const errorElement = document.getElementById(`${input.name}-error`) || 
+                                   document.getElementById(`${input.id}-error`);
+                if (errorElement) {
+                    errorElement.style.display = 'none';
+                }
+                
+                // Validate required fields
+                if (input.hasAttribute('required') && !input.value.trim()) {
+                    isValid = false;
+                    if (errorElement) {
+                        errorElement.textContent = 'This field is required';
+                        errorElement.style.display = 'block';
+                    }
+                    return;
+                }
+                
+                // Validate email format
+                if (input.type === 'email' && input.value) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(input.value)) {
+                        isValid = false;
+                        if (errorElement) {
+                            errorElement.textContent = 'Please enter a valid email address';
+                            errorElement.style.display = 'block';
+                        }
+                    }
+                }
+                
+                // Validate min length
+                if (input.hasAttribute('minlength') && input.value.length < parseInt(input.getAttribute('minlength'))) {
+                    isValid = false;
+                    if (errorElement) {
+                        errorElement.textContent = `Minimum ${input.getAttribute('minlength')} characters required`;
+                        errorElement.style.display = 'block';
+                    }
+                }
+                
+                // Validate max length
+                if (input.hasAttribute('maxlength') && input.value.length > parseInt(input.getAttribute('maxlength'))) {
+                    isValid = false;
+                    if (errorElement) {
+                        errorElement.textContent = `Maximum ${input.getAttribute('maxlength')} characters allowed`;
+                        errorElement.style.display = 'block';
+                    }
+                }
+                
+                // Validate pattern
+                if (input.hasAttribute('pattern') && input.value) {
+                    const pattern = new RegExp(input.getAttribute('pattern'));
+                    if (!pattern.test(input.value)) {
+                        isValid = false;
+                        if (errorElement) {
+                            errorElement.textContent = 'Please match the requested format';
+                            errorElement.style.display = 'block';
+                        }
+                    }
+                }
+                
+                // Validate min value for numbers
+                if (input.type === 'number' && input.hasAttribute('min') && input.value < parseFloat(input.getAttribute('min'))) {
+                    isValid = false;
+                    if (errorElement) {
+                        errorElement.textContent = `Value must be at least ${input.getAttribute('min')}`;
+                        errorElement.style.display = 'block';
+                    }
+                }
+                
+                // Validate max value for numbers
+                if (input.type === 'number' && input.hasAttribute('max') && input.value > parseFloat(input.getAttribute('max'))) {
+                    isValid = false;
+                    if (errorElement) {
+                        errorElement.textContent = `Value must be at most ${input.getAttribute('max')}`;
+                        errorElement.style.display = 'block';
+                    }
+                }
+            });
+            
+            return isValid;
+        }
+
+        // User Registration Form Handler
+        userRegistrationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm(userRegistrationForm)) {
+                return;
+            }
+            
+            // Check if at least one permission is selected
+            const permissions = userRegistrationForm.querySelectorAll('input[name="permissions"]:checked');
+            if (permissions.length === 0) {
+                document.getElementById('permissions-error').style.display = 'block';
+                return;
+            }
+            
+            // Simulate form submission
+            const successMessage = document.getElementById('registration-success');
+            successMessage.style.display = 'block';
+            
+            // Reset form after successful submission
+            setTimeout(() => {
+                userRegistrationForm.reset();
+                successMessage.style.display = 'none';
+            }, 3000);
+        });
+
+        // Product Form Handler
+        productForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm(productForm)) {
+                return;
+            }
+            
+            // Simulate form submission
+            const successMessage = document.getElementById('product-success');
+            successMessage.style.display = 'block';
+            
+            // Reset form after successful submission
+            setTimeout(() => {
+                productForm.reset();
+                successMessage.style.display = 'none';
+                productRegistrationForm.classList.add('hidden');
+            }, 3000);
+        });
+
+        // Profile Form Handler
+        profileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm(profileForm)) {
+                return;
+            }
+            
+            // Simulate form submission
+            const successMessage = document.getElementById('profile-success');
+            successMessage.style.display = 'block';
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        });
+
+        // Search Form Handler
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm(searchForm)) {
+                return;
+            }
+            
+            // Simulate search
+            alert('Search functionality would be implemented here with the provided criteria');
+        });
+
+        // Configuration Form Handler
+        configurationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm(configurationForm)) {
+                return;
+            }
+            
+            // Simulate form submission
+            const successMessage = document.getElementById('config-success');
+            successMessage.style.display = 'block';
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        });
+
+        // Show product form
+        showProductFormBtn.addEventListener('click', function() {
+            productRegistrationForm.classList.remove('hidden');
+        });
+
+        // Cancel product form
+        cancelProductBtn.addEventListener('click', function() {
+            productRegistrationForm.classList.add('hidden');
+            productForm.reset();
+        });
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date in forms
+            const today = new Date().toISOString().split('T')[0];
+            const startDateInput = document.getElementById('start-date');
+            if (startDateInput) {
+                startDateInput.value = today;
+            }
+            
+            // Set min date to today for date inputs
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            dateInputs.forEach(input => {
+                if (!input.id.includes('from') && !input.id.includes('to')) {
+                    input.min = today;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
